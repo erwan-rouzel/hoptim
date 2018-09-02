@@ -1,0 +1,5 @@
+django==1.9.5
+pip==8.1.2
+six==1.10.0
+requests==2.10.0
+django-floppyforms==1.6.2

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load home_extras %}
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}HOPtim{% endblock %}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ STATIC_URL }}sb_admin/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{{ STATIC_URL }}sb_admin/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="{{ STATIC_URL }}sb_admin/dist/css/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ STATIC_URL }}sb_admin/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{{ STATIC_URL }}sb_admin/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom Extra Styles -->
+    <style>
+        ul {
+            list-style-type: none;
+        }
+
+        .glyphicon-refresh-animate {
+            -animation: spin .7s infinite linear;
+            -webkit-animation: spin2 .7s infinite linear;
+        }
+
+        @-webkit-keyframes spin2 {
+            from { -webkit-transform: rotate(0deg);}
+            to { -webkit-transform: rotate(360deg);}
+        }
+
+        @keyframes spin {
+            from { transform: scale(1) rotate(0deg);}
+            to { transform: scale(1) rotate(360deg);}
+        }
+
+        select#id_tables_selection {
+            width:100%;
+        }
+    </style>
+
+    <!-- jQuery <script src="{{ STATIC_URL }} /static/sb_admin/bower_components/jquery/dist/jquery.js"></script> -->
+
+    <link href="{{ STATIC_URL }}javascript/jquery/jquery-theme-lightness-ui-1.10.4.css" rel="stylesheet">
+    <script src="{{ STATIC_URL }}javascript/jquery/jquery-1.10.2.js"></script>
+    <script src="{{ STATIC_URL }}javascript/jquery/jquery-ui-1.11.4.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="{{ STATIC_URL }}javascript/html5shiv-3.7.0.min.js"></script>
+        <script src="{{ STATIC_URL }}javascript/respond/respond-1.4.2.min.js"></script>
+    <![endif]-->
+
+    <link href="{{ STATIC_URL }}javascript/jsontreeviewer/libs/jsonTree/jsonTree.css" rel="stylesheet" />
+    <script src="{{ STATIC_URL }}javascript/jsontreeviewer/libs/jsonTree/jsonTree.js"></script>
+    <script src="{{ STATIC_URL }}javascript/chart/dist/Chart.js"></script>
+    <script src="{{ STATIC_URL }}javascript/color-hash/dist/color-hash.js"></script>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img src="{{ STATIC_URL }}images/ds_favicon.png" class="navbar-brand">
+                <img src="{{ STATIC_URL }}images/hoptim-logo.png" class="navbar-brand">
+                <p class="navbar-brand">v{% get_version %}</p>
+            </div>
+
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- /.dropdown -->
+                {% if json_tasks %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-tasks">
+                        {% for task in json_tasks %}
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <p>
+                                            <strong>{{ task.name }} </strong>
+                                            <span class="pull-right text-muted">{{ task.progression }}%</span>
+                                        </p>
+                                        {% if task.isPeriodic %}
+                                        <p>
+                                            Last score gain checked: {{ task.lastScoreGainChecked }}
+                                            </br>Number of checks: {{ task.numberOfChecks }}
+                                        </p>
+                                        {% endif %}
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ task.progression }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ task.progression }}%">
+                                                <span class="sr-only">{{ task.progression }}% (success)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                        {% endfor %}
+                    </ul>
+                    <!-- /.dropdown-tasks -->
+                </li>
+                {% endif %}
+                <!-- Uncomment this to add a top-right corner dropdown menu to HOPtim GUI
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                  -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <!-- Uncomment this to add a search bar component to HOPtim GUI
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                        -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> HBase<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="/home/hbase/region_servers">Cluster</a>
+                                </li>
+                                <li>
+                                    <a href="/home/hbase/tables">Tables</a>
+                                </li>
+                                <li>
+                                    <a href="/home/hbase/regions">Regions</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> OpenTSDB<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="/home/opentsdb/metric">Metric</a>
+                                </li>
+                                <li>
+                                    <a href="/home/opentsdb/regions">Regions</a>
+                                </li>
+                                <li>
+                                    <a href="/home/opentsdb/split">Split</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">{% block page_title %}Dashboard{% endblock page_title %} / {% block page_subtitle %}Subtitle{% endblock page_subtitle %}</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            {% block content %}
+            CONTENT
+            {% endblock %}
+
+            <br />
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ STATIC_URL }}sb_admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{{ STATIC_URL }}sb_admin/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{{ STATIC_URL }}sb_admin/dist/js/sb-admin-2.js"></script>
+
+    {% block bottom_script %}{% endblock %}
+
+</body>
+
+</html>

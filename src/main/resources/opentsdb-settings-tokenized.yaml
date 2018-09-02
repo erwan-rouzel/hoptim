@@ -1,0 +1,69 @@
+# Name of driver used for accessing OpenTSDB API
+#
+# There are two currently available depending on the version of OpenTSDB :
+# - v1.x: com.dassault_systemes.infra.hoptim.opentsdb.OpenTSDBDriverV1
+#
+# There exists also a Mock driver which simulated the API in memory :
+# com.dassault_systemes.infra.hoptim.opentsdb.OpenTSDBDriverMock
+#
+# Example: com.dassault_systemes.infra.hoptim.opentsdb.OpenTSDBDriverV1
+driverClassName: %DRIVER_CLASS_NAME%
+
+# URL of the OpenTSDB API in the cluster
+#
+# Example: https://52.52.4.47:8443/api/v1 || http://localhost:4230/api/v1
+apiUrl: http://localhost:4230/api/v1
+
+# Name in HBase of the main TSDB table
+#
+# Example: ec2-52-52-4-47.us-west-1.compute.amazonaws.com-tsdb
+tsdbTable: %TSDB_TABLE%-tsdb
+
+# Name in HBase of the UID TSDB table
+#
+# Example: ec2-52-52-4-47.us-west-1.compute.amazonaws.com-tsdb-uid
+tsdbUidTable: %TSDB_TABLE%-tsdb-uid
+
+# There is a maximum number of regions recommanded per region server.
+# This settings between 0 and 1 tells how much regions we should allow for one region server (1 means we allow max).
+#
+# Example: 0.6
+regionServerFillFactor: %REGION_SERVER_FILL_FACTOR%
+
+# This value is used to automatically launch an optimization when there is a minimum gain in the score
+# This gain is a percentage (eg. 100 means the cluster gets double better score after optimization)
+#
+# Example: 50
+scoreGainThreshold: %SCORE_GAIN_THRESHOLD%
+
+# This value determines the sleeping time in seconds between two automatic repeatition of optimization algorithm
+# eg. A value of 86400 means there is one repeatition per day
+#
+# Example: 86400
+schedulerPeriod: %SCHEDULER_PERIOD%
+
+# This value determines the delay in seconds before first execution of scheduled optimization algorithm
+# eg. A value of 3600 means one hour delay
+#
+# Example: 0
+schedulerDelay: %SCHEDULER_DELAY%
+
+# VIP Metrics which need to be prioritized for splitting
+# <metric_name>: <weight>
+#
+# The bigger the weight, the highest number of splits for this metric.
+# The total of all the weights should be 1.
+#
+# Example:
+#     paas.supervision.alert: 0.4
+#     a.vip.1: 0.15
+#     d.vip.2: 0.15
+#     g.vip.3: 0.15
+#     k.vip.4: 0.15
+vipMetrics:
+    %VIP_METRICS%
+
+# The delay in seconds when executing delayed optimization tasks
+# Example : 3600
+delayedExecutionTime: %DELAYED_EXECUTION_TIME%
+

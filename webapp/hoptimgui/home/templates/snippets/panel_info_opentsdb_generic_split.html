@@ -1,0 +1,23 @@
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        Information
+    </div>
+    <div class="panel-body">
+        <p>The maximum number of Regions per Region Server is computed with the formula:</p>
+        $$RegionServerMemory * MemStoreUpperLimit \over MemstoreFlushSize * NumberColumnFamilies$$
+
+        <p>This algorithm does a split which is optimized for OpenTSDB by splitting only at the beginning of a metric. This prevents metrics from being broken between several regions.</p>
+    </div>
+    <div class="panel-footer">
+        Source: <a href="http://archive.cloudera.com/cdh5/cdh/5/hbase-0.98.1-cdh5.1.5/book/ops.capacity.html">The Apache HBase™ Reference Guide - 15.9.2.1</a>
+    </div>
+</div>
+
+{% include "snippets/panel_cluster_target.html" with json=json %}

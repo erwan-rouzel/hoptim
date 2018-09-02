@@ -1,0 +1,34 @@
+{# slider.html #}
+{% include "floppyforms/input.html" %}
+<div id="{{ attrs.id }}-slider"></div>
+
+<style>
+    input[type="range"] {
+        position: relative;
+        margin-left: 1em;
+        width:95%;
+    }
+    input[type="range"]:after,
+    input[type="range"]:before {
+        position: absolute;
+        top: 1em;
+        color: #aaa;
+    }
+    input[type="range"]:before {
+        left:0em;
+        content: attr(min);
+    }
+    input[type="range"]:after {
+        right: 0em;
+        content: attr(max);
+    }
+    input[type="range"] + div {
+        text-align: center;
+    }
+</style>
+
+<script>
+$('#{{ attrs.id }}').on("change mousemove", function() {
+    $(this).next().html($(this).val());
+});
+</script>

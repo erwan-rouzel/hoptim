@@ -1,0 +1,44 @@
+# Name of driver used for accessing HBase API
+#
+# There are two currently available depending on the version of HBase:
+# - v0.x: com.dassault_systemes.infra.hoptim.hbase.HBaseDriverV0
+# - v1.x: com.dassault_systemes.infra.hoptim.hbase.HBaseDriverV1
+#
+# There exists also a Mock driver which simulated the API in memory :
+# com.dassault_systemes.infra.hoptim.hbase.HBaseDriverMock
+#
+# Example: com.dassault_systemes.infra.hoptim.hbase.HBaseDriverV0
+driverClassName: %DRIVER_CLASS_NAME%
+
+# The memory allocated to region server in kilo bytes according to HBase environement configuration
+#
+# Example: 11000
+regionServerMemory: %REGION_SERVER_MEMORY%
+
+# The zookeeper quorum address. If the value is "auto" then the quorum will be retrieved automatically from HBase XML local configuration.
+#
+# Example : ec2-52-9-230-14.us-west-1.compute.amazonaws.com,ec2-52-8-49-110.us-west-1.compute.amazonaws.com,ec2-52-9-201-56.us-west-1.compute.amazonaws.com"
+zookeeperQuorum: %ZOOKEEPER_QUORUM%
+
+# The port on which the local RESTful API of HOPtim will be run. This port should be opened accordingly on the VM where HOPtim is deployed.
+#
+# Example : 8003
+restApiPort: %REST_API_PORT%
+
+# The name of the file where the dumps of the cluster state are stored. If no path is specified, the file is stored
+# in the folder where the jar is running.
+#
+# Example : hbase-dump.json
+dumpFileName: hbase-dump.json
+
+# The url used to dump the cluster state.
+#
+# Example : http://localhost:8003/api/region_servers
+dumpUrl: http://localhost:8003/api/region_servers
+
+# The version of the tool. This value is filled automatically by maven during the build process from the pom.xml.
+version: ${project.version}
+
+# The name of the tool. This value is filled automatically by maven during the build process from the pom.xml.
+name: ${project.name}
+

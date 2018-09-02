@@ -1,0 +1,50 @@
+{% extends "home/base.html" %}
+{% load home_extras %}
+
+{% block page_title %}HBase{% endblock page_title %}
+{% block page_subtitle %}{{ form.title }}{% endblock page_subtitle %}
+
+{% block content %}
+
+{% include "snippets/action_bar.html" with action_buttons=action_buttons option=action_id action_url='/home/hbase/region_servers' %}
+
+<div class="row">
+    <div class="col-lg-6">
+        {% include form.panel_info_template with json=json %}
+    </div>
+    <div class="col-lg-6">
+        <form method="post" id="config_form" action="/home/hbase/region_servers">
+            {% csrf_token %}
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Configuration
+                </div>
+                <div class="panel-body">
+                    {% if form.has_config %}
+                        {{ form }}
+                    {% else %}
+                        This algorithm does not provide custom configuration.
+                    {% endif %}
+                </div>
+                <div class="panel-footer">
+                    <button name="preview" id="preview" type="submit" class="btn btn-primary" value="Preview" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Loading...">
+                        Preview
+                    </button>
+                    <script type="text/javascript">
+                        $("#config_form").submit(function() {
+                            var $btn = $("#preview");
+                            $btn.button('loading');
+                            setTimeout(function () {
+                                $btn.button('reset');
+                            }, 60000);
+                        });
+                    </script>
+                </div>
+            </div>
+            <input type="hidden" name="option" value="{{ action_id }}" />
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
+

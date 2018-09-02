@@ -1,0 +1,33 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> {{ title }}
+
+        {% if toolbar %}
+        <div class="pull-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                    Resize
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="?chart_height=70">Height 70px</a>
+                    </li>
+                    <li><a href="?chart_height=100">Height 100px</a>
+                    </li>
+                    <li><a href="?chart_height=150">Height 150px</a>
+                    </li>
+                    <li><a href="?chart_height=300">Height 300px</a>
+                    </li>
+                    <li><a href="?chart_height=500">Height 500px</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <canvas id="{{ id }}" height="{{ height }}"></canvas>
+    </div>
+    <!-- /.panel-body -->
+</div>

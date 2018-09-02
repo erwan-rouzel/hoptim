@@ -1,0 +1,105 @@
+{% extends "home/base.html" %}
+{% load home_extras %}
+
+{% block page_title %}HBase{% endblock page_title %}
+{% block page_subtitle %}List of Regions per Region Server (size in MB){% endblock page_subtitle %}
+
+{% block content %}
+{% include "snippets/action_bar.html" with action_buttons=action_buttons action_url='/home/hbase/region_servers' %}
+
+{% if json_status %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="alert alert-{% if json_status.status == 1 %}success{% else %}danger{% endif %}">
+            <strong>
+                {% if json_status.status == 1 %}
+                    SUCCESS.
+                {% else %}
+                    ERROR. The following exception was returned:
+                    {% include "snippets/json_text_view.html" with json=json_status id='result' %}
+                {% endif %}
+            </strong>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="{{ panel_width }}">
+            {% include "snippets/panel_chartjs_view.html" with id='size-chartjs' title='Size of Regions' height=chart_height toolbar=True %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="{{ panel_width }}">
+            {% include "snippets/panel_chartjs_view.html" with id='read-delta-chartjs' title='Read requests delta' height=chart_height toolbar=True %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="{{ panel_width }}">
+            {% include "snippets/panel_chartjs_view.html" with id='write-delta-chartjs' title='Write requests delta' height=chart_height toolbar=True %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        {% include "snippets/panel_json_text_view.html" with json=json %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        {% if latest_update == '' %}
+        <div class="alert alert-danger">
+            No dump file available for update. The read / write delta values are not accurate.
+        {% else %}
+        <div class="alert alert-info">
+            Latest dump update: <strong>{{ latest_update }}</strong>
+        {% endif %}
+            <form action="/home/" method="post" role="form">
+                <div class="form-group">
+                    {% csrf_token %}
+                </div>
+                <button name="update_dump" id="update_dump" type="submit" class="btn btn-primary btn-xs" value="update_dump" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Loading...">
+                    Update Now
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Command line
+            </div>
+            <div class="panel-body">
+                <p>You can retrieve this information using the RESTful API:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}region_servers</pre>
+
+                <p>To update the dump of read and write requests count:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}dump/update</pre>
+
+                <p>To retrieve the timestamp corresponding to latest update of the dump:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}dump/timestamp</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block bottom_script %}
+{% include "snippets/load_json.html" with json_var_name='json' json=json %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json' id='size-chartjs' attribute='sizeMB' x_label='Region Servers' y_label='Size in MB' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json' id='read-delta-chartjs' attribute='readRequestsDelta' x_label='Region Servers' y_label='Read requests' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json' id='write-delta-chartjs' attribute='writeRequestsDelta' x_label='Region Servers' y_label='Write requests' %}
+{% endblock bottom_script %}

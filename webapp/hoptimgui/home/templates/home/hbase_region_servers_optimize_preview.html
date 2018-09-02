@@ -1,0 +1,81 @@
+{% extends "home/base.html" %}
+{% load home_extras %}
+
+{% block page_title %}HBase{% endblock page_title %}
+{% block page_subtitle %}Execution plan{% endblock page_subtitle %}
+
+{% block content %}
+{% include "snippets/action_bar.html" with action_buttons=action_buttons option=action_id config=json_config action_url='/home/hbase/region_servers' %}
+
+<div class="row">
+    {% if display_graph %}
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Before optimization</strong>
+                </div>
+                <div class="panel-body">
+                    {% include "snippets/panel_chartjs_view.html" with id='size-chart-current' title='Size' height='200' toolbar=False %}
+                    {% include "snippets/panel_chartjs_view.html" with id='read-chart-current' title='Read requests (delta)' height='200' toolbar=False %}
+                    {% include "snippets/panel_chartjs_view.html" with id='write-chart-current' title='Write requests (delta)' height='200' toolbar=False %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>After optimization (score gain: +{{ score_gain }}%)</strong>
+                </div>
+                <div class="panel-body">
+                    {% include "snippets/panel_chartjs_view.html" with id='size-chart-new' title='Size' height='200' toolbar=False %}
+                    {% include "snippets/panel_chartjs_view.html" with id='read-chart-new' title='Read requests (delta)' height='200' toolbar=False %}
+                    {% include "snippets/panel_chartjs_view.html" with id='write-chart-new' title='Writes requests (delta)' height='200' toolbar=False %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        {% include "snippets/panel_json_text_view.html" with json=json %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Command line
+            </div>
+            <div class="panel-body">
+                <p>You can retrieve this information using the RESTful API:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}region_servers/smart_balancing/plan/{{ full_name }}/{% url_quote_plus json_config %}</pre>
+
+                <p>To execute immediately:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}region_servers/smart_balancing/execute/{{ full_name }}/{% url_quote_plus json_config %}</pre>
+
+                <p>To execute over SCHEDULER_DELAY settings:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}region_servers/smart_balancing/execute_delayed/{{ full_name }}/{% url_quote_plus json_config %}</pre>
+
+                {% if is_repeatable %}
+                <p>To execute over SCHEDULER_DELAY settings + Repeat:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}region_servers/smart_balancing/execute_delayed_repeat/{{ full_name }}/{% url_quote_plus json_config %}</pre>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block bottom_script %}
+{% include "snippets/load_json.html" with json_var_name='json_current' json=json_current %}
+{% include "snippets/load_json.html" with json_var_name='json_new' json=json_new %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json_current' id='size-chart-current' attribute='sizeMB' x_label='Region Servers' y_label='Size in MB' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json_new' id='size-chart-new' attribute='sizeMB' x_label='Region Servers' y_label='Size in MB' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json_current' id='read-chart-current' attribute='readRequestsDelta' x_label='Region Servers' y_label='Number of read requests (delta)' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json_new' id='read-chart-new' attribute='readRequestsDelta' x_label='Region Servers' y_label='Number of read requests (delta)' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json_current' id='write-chart-current' attribute='writeRequestsDelta' x_label='Region Servers' y_label='Number of write requests (delta)' %}
+{% include "snippets/compute_chartjs_region_servers_graph.html" with json_var_name='json_new' id='write-chart-new' attribute='writeRequestsDelta' x_label='Region Servers' y_label='Number of write requests (delta)' %}
+{% endblock bottom_script %}

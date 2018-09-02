@@ -1,0 +1,26 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Target state of the cluster to reach optimality<br/></br>
+        <i>These values are computed based on the official formula above and multiplying by the YAML settings regionServerFillFactor (currently {{ json.regionServerFillFactor }}).</i>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Recommandation</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Number of splits to make to reach optimal splitting</td>
+                <td>{{ json.numberOfSplitsToMake }}</td>
+            </tr>
+            <tr>
+                <td>Optimal number of regions</td>
+                <td>{{ json.optimalTotalNumberOfRegions }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+{% extends "home/base.html" %}
+{% load home_extras %}
+{% block page_title %}OpenTSDB{% endblock page_title %}
+{% block page_subtitle %}Informations for TSDB region {{ encoded_name }}{% endblock page_subtitle %}
+
+{% block content %}
+{% include "snippets/panel_json_text_view.html" with json=json %}
+
+<div class="col-lg-12">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            Command line
+        </div>
+        <div class="panel-body">
+            <p>You can retrieve this information using the RESTful API:</p>
+            <pre>curl {% get_settings "EXT_REST_API_URL" %}regions/tsdb/infos/{{ encoded_name }}</pre>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

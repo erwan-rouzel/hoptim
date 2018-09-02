@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.dassault_systemes.infra</groupId>
+  <artifactId>hoptim</artifactId>
+  <name>hoptim</name>
+  <version>1.1.1</version>
+  <url>http://maven.apache.org</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/extra-resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>**/*.yaml</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>false</filtering>
+                  <excludes>
+                    <exclude>**/*.yaml</exclude>
+                  </excludes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes />
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <transformers>
+            <transformer>
+              <manifestEntries>
+                <Main-Class>com.dassault_systemes.infra.hoptim.rest.SimpleServer</Main-Class>
+                <Class-Path>.</Class-Path>
+                <Build-Number>1</Build-Number>
+              </manifestEntries>
+            </transformer>
+            <transformer />
+          </transformers>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>scp</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <exec>
+                  <arg />
+                  <arg />
+                  <arg />
+                </exec>
+                <exec>
+                  <arg />
+                  <arg />
+                </exec>
+                <exec>
+                  <arg />
+                </exec>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.53</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-jsch</artifactId>
+            <version>1.9.7</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <tasks>
+            <path>
+              <fileset />
+            </path>
+            <taskdef />
+            <tar>
+              <tarfileset>
+                <include />
+              </tarfileset>
+              <tarfileset>
+                <include />
+                <include />
+              </tarfileset>
+            </tar>
+            <gzip />
+          </tasks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
+

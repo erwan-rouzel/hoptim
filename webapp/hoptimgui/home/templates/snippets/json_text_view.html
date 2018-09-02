@@ -1,0 +1,7 @@
+{% load home_extras %}
+<div id="json_wrapper_{{ id }}"></div>
+<script type="text/javascript">
+    var wrapper = document.getElementById("json_wrapper_{{ id }");
+    var json = {{ json | jsonify }};
+    var tree = jsonTree.create(json, json_wrapper_{{ id }});
+</script>

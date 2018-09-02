@@ -1,0 +1,99 @@
+{% extends "home/base.html" %}
+{% load home_extras %}
+{% block page_title %}OpenTSDB{% endblock page_title %}
+{% block page_subtitle %}Get metric informations{% endblock page_subtitle %}
+
+{% block content %}
+<script type="text/javascript">
+    $(function() {
+        $( "#id_metric_name" ).autocomplete({
+           source: function(request, response){ // les deux arguments représentent les données nécessaires au plugin
+            $.ajax(
+            {
+                url : '{% get_settings "EXT_REST_API_URL" %}metrics/' + request.term,
+                dataType: 'json'
+            })
+            .done(function(data){
+                response($.map( JSON.parse(data), function( item ) {
+                    return {
+                        label: item,
+                        value: item
+                    }
+                }));
+            })
+            .fail(function(){
+                console.log("Ajax autocomplete call failed.");
+            });
+        }
+        });
+     });
+</script>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-search fa-fw"></i> Search
+            </div>
+            <div class="panel-body">
+                <form action="/home/opentsdb/metric" method="post" role="form">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        {{ form }}
+                    </div>
+                    <div class="form-group">
+                        <input name="get_tags" type="submit" class="btn btn-primary" value="Get tags">
+                        <input name="get_region_servers" type="submit" class="btn btn-primary" value="Get hosting region servers">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        {% if json %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-tags fa-fw"></i> Result
+            </div>
+            {% if json.tags %}
+            <div class="panel-body">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>Tagk</th>
+                        <th>Tagv (sample)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for tag in json.tags %}
+                    <tr>
+                        <td>{{ tag.tagk }}</td>
+                        <td>{{ tag.tagv }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% elif json.regionServers %}
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>Region Servers</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rs in json.regionServers %}
+                <tr>
+                    <td>{{ rs }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

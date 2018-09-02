@@ -1,0 +1,61 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Json Viewer
+        <div class="pull-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                    Actions
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="#">Expand all</a>
+                    </li>
+                    <li><a href="#">Collapse all</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <script content="text/javacript">
+            var json = {{ json | safe }};
+
+            var graph = {}
+            graph.element = 'regions-chart';
+            graph.hideHover = 'auto';
+            graph.stacked = true;
+            graph.resize = true;
+
+            graph.data = [];
+            graph.ykeys = [];
+            graph.xkey= 'rs';
+            graph.labels = [];
+
+            $.each(json, function(region_server, region_list) {
+                bar = {'rs': region_server};
+
+                for(j = 0; j < region_list.length; j++) {
+                    if(region_list[j].sizeMB > 10 && region_list[j].sizeMB != null) {
+
+                        if(region_list[j].tableName in bar) {
+                            tableName = region_list[j].tableName + " (" + j + ")";
+                        } else {
+                            tableName = region_list[j].tableName;
+                        }
+
+                        bar[tableName] = region_list[j].sizeMB;
+                        graph.ykeys.push(tableName);
+                        graph.labels.push(tableName);
+                    }
+                }
+
+                graph.data.push(bar);
+            });
+
+            Morris.Bar(graph);
+            </script>
+    </div>
+    <!-- /.panel-body -->
+</div>
+

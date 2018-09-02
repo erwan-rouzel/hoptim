@@ -1,0 +1,74 @@
+﻿{% extends "home/base.html" %}
+{% load home_extras %}
+{% block page_title %}OpenTSDB{% endblock page_title %}
+{% block page_subtitle %}Split recommandations{% endblock page_subtitle %}
+
+{% block content %}
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Information
+            </div>
+            <div class="panel-body">
+                <p>The maximum number of Regions per Region Server is computed with the formula:</p>
+                $$RegionServerMemory * MemStoreUpperLimit \over MemstoreFlushSize * NumberColumnFamilies$$
+            </div>
+            <div class="panel-footer">
+                Source: <a href="http://archive.cloudera.com/cdh5/cdh/5/hbase-0.98.1-cdh5.1.5/book/ops.capacity.html">The Apache HBase™ Reference Guide - 15.9.2.1. Number of regions per RS - upper bound</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Presplit file
+            </div>
+            <div class="panel-body">
+                {% include "snippets/action_bar.html" with action_buttons=action_buttons action_url='/home/opentsdb/split' %}
+
+                <p>You can apply this presplit to a new empty cluster by running these commands (tsdb table should be empty):</p>
+                <pre>echo "disable '[tsdb_table_name]'" | hbase shell -n
+echo "drop '[tsdb_table_name]'" | hbase shell -n
+echo "create '[tsdb_table_name]', SPLITFILES => '/tmp/presplit_file.txt'" | hbase shell -n
+                </pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        {% include "snippets/panel_cluster_state.html" with json=json %}
+    </div>
+    <div class="col-lg-6">
+        {% include "snippets/panel_cluster_target.html" with json=json %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Command line
+            </div>
+            <div class="panel-body">
+                <p>You can retrieve this information using the RESTful API:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}regions/tsdb/presplit</pre>
+
+                <p>You can retrieve also the presplit file like that:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}regions/tsdb/presplit/file</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

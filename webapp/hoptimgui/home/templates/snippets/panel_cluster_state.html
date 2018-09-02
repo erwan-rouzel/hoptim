@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Current state of the cluster
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Memory allocated per region server (MB)</td>
+                <td>{{ json.memAllocatedPerRegionServerMB }}</td>
+            </tr>
+            <tr>
+                <td>Total number of regions</td>
+                <td>{{ json.currentTotalNumberOfRegions }}</td>
+            </tr>
+            <tr>
+                <td>Number of Region Servers</td>
+                <td>{{ json.numberOfRegionServers }}</td>
+            </tr>
+            <tr>
+                <td>Size of the memstore flush (MB)</td>
+                <td>{{ json.memStoreFlushSizeMB }}</td>
+            </tr>
+            <tr>
+                <td>Upper limit of the memstore</td>
+                <td>{{ json.memStoreUpperLimit }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

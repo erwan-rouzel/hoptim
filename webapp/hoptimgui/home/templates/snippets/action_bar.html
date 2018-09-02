@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-lg-12">
+        <form action="{{ action_url }}" method="post" role="form">
+            <div class="form-group">
+                {% csrf_token %}
+            </div>
+            <div class="form-group">
+                {% for key, value in action_buttons.items %}
+                    <button name="{{ key }}" id="{{ key }}" type="submit" class="btn btn-primary" value="{{ value }}" data-loading-text="<i class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></i> Loading...">
+                        {{ value }}
+                    </button>
+                    <script type="text/javascript">
+                        $("#{{ key }}").click(function() {
+                            var $btn = $(this);
+                            $btn.button('loading');
+                            setTimeout(function () {
+                                $btn.button('reset');
+                            }, 60000);
+                        });
+                    </script>
+                {% endfor %}
+
+                <input type="hidden" name="option" value="{{ option }}" />
+                <input type="hidden" name="config" value="{{ config }}" />
+            </div>
+        </form>
+    </div>
+</div>

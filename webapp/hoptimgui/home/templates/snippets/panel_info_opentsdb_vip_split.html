@@ -1,0 +1,25 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        Information
+    </div>
+    <div class="panel-body">
+        <p>The VIP algorithm isolates the VIP metrics which have been defined in HOPtim YAML settings file. This means these metrics will then occupy one region only which will allow balancing the VIP metric equally when doing the balancing.</p>
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        Information
+    </div>
+    <div class="panel-body">
+        <p>The maximum number of Regions per Region Server is computed with the formula:</p>
+        $$RegionServerMemory * MemStoreUpperLimit \over MemstoreFlushSize * NumberColumnFamilies$$
+
+        <p>This algorithm does a split which is optimized for OpenTSDB by splitting only at the beginning of a metric. This prevents metrics from being broken between several regions.</p>
+    </div>
+    <div class="panel-footer">
+        Source: <a href="http://archive.cloudera.com/cdh5/cdh/5/hbase-0.98.1-cdh5.1.5/book/ops.capacity.html">The Apache HBase™ Reference Guide - 15.9.2.1</a>
+    </div>
+</div>
+
+{% include "snippets/panel_cluster_target.html" with json=json %}

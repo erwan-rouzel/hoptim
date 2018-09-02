@@ -1,0 +1,116 @@
+<script content="text/javacript">
+var ctx = document.getElementById("{{ id }}");
+
+json = {{ json_var_name }};
+tableList = [];
+data = {};
+data.labels = [];
+data.datasets = [];
+numberOfRegionsForTable = [];
+numberOfRegionServers = 0;
+
+/* We build first the list of tables and count the number of regions per table */
+$.each(json, function(region_server, region_list) {
+    region_server_short = region_server.split(".")[0];
+    data.labels.push(region_server_short);
+    numberOfRegionServers++;
+
+    for(j = 0; j < region_list.length; j++) {
+        tableName = region_list[j].tableName;
+
+        if($.inArray(tableName, tableList) <= -1) {
+            tableList[tableList.length] = tableName;
+            numberOfRegionsForTable[tableName] = 1;
+        } else {
+            numberOfRegionsForTable[tableName]++;
+        }
+    }
+});
+
+/* The define the dataset settings for each table (one table = one dataset)
+ * The color is defined using the color-hash.js library which produced one unique color for a given string
+ */
+var customHash = function(str) {
+    var hash = 0;
+    for(var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    return Math.abs(hash);
+};
+var colorHash = new ColorHash({lightness: [0.5], hash: customHash});
+$.each(tableList, function(key, value) {
+
+    var c = colorHash.rgb(value);
+    data.datasets[key] = [];
+    data.datasets[key].label = value + " (" + numberOfRegionsForTable[value] + " regions)";
+    data.datasets[key].borderWidth = 1;
+    data.datasets[key].backgroundColor = "rgba(" + c[0] + "," + c[1] + "," + c[2] + ", 0.6)";
+    data.datasets[key].borderColor = "rgba(" + c[0] + "," + c[1] + "," + c[2] + ", 1)";
+    data.datasets[key].hoverBackgroundColor = "rgba(" + c[0] + "," + c[1] + "," + c[2] + ", 0.8)";
+    data.datasets[key].hoverBorderColor = "rgba(" + c[0] + "," + c[1] + "," + c[2] + ", 1)";
+    data.datasets[key].data = Array.apply(null, Array(numberOfRegionServers)).map(Number.prototype.valueOf,0);
+});
+
+/* Finally we iterate once again over all the region servers
+ * And for each table in each region server we add the size in MB to the dataset
+ * The reason why we have to add is because there can exists several regions for the same table for a given RS
+ */
+rs_index = 0;
+$.each(json, function(region_server, region_list) {
+    $.each(tableList, function(key, value) {
+         for(j = 0; j < region_list.length; j++) {
+            if(region_list[j].tableName == value) {
+                data.datasets[key].data[rs_index] += region_list[j].{{ attribute }};
+            }
+         }
+    });
+
+    rs_index++;
+});
+
+/*
+ * We have now everything needed to instanciate the chart
+ */
+var myBarChart = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+        legend: {
+                display: true
+        },
+        maintainAspectRatio: true,
+
+        hover: {
+                mode: 'dataset'
+        },
+        scales: {
+                xAxes: [{
+                        stacked: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: '{{ x_label }}',
+                            fontStyle: 'bold'
+                        }
+                }],
+                yAxes: [{
+                        stacked: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: '{{ y_label }}',
+                            fontStyle: 'bold'
+                        }
+                }]
+        }
+    }
+});
+
+$("#{{ id }}").click(
+    function(evt){
+        var activePoints = myBarChart.getElementAtEvent(evt);
+        var tableName = activePoints[0]._model.datasetLabel.split(" ")[0];
+        var url = "/home/hbase/tables/" + tableName;
+        window.location = url;
+    }
+);
+</script>

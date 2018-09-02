@@ -1,0 +1,44 @@
+{% extends "home/base.html" %}
+{% load home_extras %}
+{% block page_title %}HBase{% endblock page_title %}
+{% block page_subtitle %}Informations for table {{ table_name }}{% endblock page_subtitle %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                {% include "snippets/panel_chartjs_view.html" with id='table-size-chartjs' title='Regions sizes' height=chart_height toolbar=True %}
+                {% include "snippets/panel_chartjs_view.html" with id='table-read-chartjs' title='Read requests' height=chart_height toolbar=True %}
+                {% include "snippets/panel_chartjs_view.html" with id='table-write-chartjs' title='Write requests' height=chart_height toolbar=True %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-12">
+                {% include "snippets/panel_json_text_view.html" with json=json %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Command line
+            </div>
+            <div class="panel-body">
+                <p>You can retrieve this information using the RESTful API:</p>
+                <pre>curl {% get_settings "EXT_REST_API_URL" %}tables/infos/{{ table_name }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block bottom_script %}
+{% include "snippets/compute_chartjs_table_regions_graph.html" with json=json id='table-size-chartjs' attribute='sizeMB' x_label='Regions' y_label='Size in MB' %}
+{% include "snippets/compute_chartjs_table_regions_graph.html" with json=json id='table-read-chartjs' attribute='readRequestsDelta' x_label='Regions' y_label='Read requests' %}
+{% include "snippets/compute_chartjs_table_regions_graph.html" with json=json id='table-write-chartjs' attribute='writeRequestsDelta' x_label='Regions' y_label='Write requests' %}
+{% endblock bottom_script %}
